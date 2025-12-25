@@ -19,46 +19,153 @@
       align-items: center;
       justify-content: center;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      overflow: hidden;
+    }
+
+    /* ❄️ Snowflakes */
+    .snowflake {
+      position: fixed;
+      top: -10px;
+      color: white;
+      font-size: 14px;
+      opacity: 0.8;
+      animation: fall linear infinite;
+      pointer-events: none;
+    }
+
+    @keyframes fall {
+      to {
+        transform: translateY(110vh);
+      }
+    }
+
+    /* ✉️ Envelope container */
+    .envelope-wrapper {
+      position: relative;
+      width: 320px;
+      height: 220px;
+      cursor: pointer;
+      perspective: 800px;
     }
 
     .envelope {
+      position: absolute;
+      width: 100%;
+      height: 100%;
       background: white;
-      border: 2px solid var(--red);
       border-radius: 12px;
-      padding: 60px 80px;
+      border: 2px solid var(--red);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+      overflow: hidden;
+    }
+
+    /* Envelope flap */
+    .flap {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 50%;
+      background: var(--red);
+      transform-origin: top;
+      transform: rotateX(0deg);
+      transition: transform 0.9s ease;
+      clip-path: polygon(0 0, 100% 0, 50% 100%);
+    }
+
+    /* Card inside */
+    .card {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 100%;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       text-align: center;
-      cursor: pointer;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      text-decoration: none;
-      color: #111;
+      padding: 20px;
+      transform: translateY(60%);
+      transition: transform 0.9s ease;
     }
 
-    .envelope:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 12px 30px rgba(0,0,0,0.15);
-    }
-
-    .envelope h1 {
-      margin: 0;
-      font-size: 2rem;
+    .card h1 {
+      font-size: 1.4rem;
       color: var(--red);
     }
 
-    .envelope p {
-      margin-top: 15px;
+    .hint {
+      position: absolute;
+      bottom: -40px;
+      width: 100%;
+      text-align: center;
       color: #666;
-      font-size: 1rem;
+      font-size: 0.9rem;
+    }
+
+    /* 🎬 Open animation */
+    .open .flap {
+      transform: rotateX(-140deg);
+    }
+
+    .open .card {
+      transform: translateY(0);
+    }
+
+    /* Fade-out before navigation */
+    .fade-out {
+      animation: fade 0.6s forwards;
+    }
+
+    @keyframes fade {
+      to {
+        opacity: 0;
+      }
     }
   </style>
 </head>
 <body>
 
-  <a href="present.html" class="envelope">
-    <h1>Merry Christmas Nuria 🎄
-      Love you lots, from Oli
-    </h1>
-    <p>Click to open</p>
-  </a>
+  <!-- ❄️ Snowflakes -->
+  <script>
+    for (let i = 0; i < 25; i++) {
+      const snow = document.createElement("div");
+      snow.className = "snowflake";
+      snow.style.left = Math.random() * 100 + "vw";
+      snow.style.animationDuration = 5 + Math.random() * 5 + "s";
+      snow.style.fontSize = 10 + Math.random() * 10 + "px";
+      snow.innerHTML = "❄";
+      document.body.appendChild(snow);
+    }
+  </script>
+
+  <!-- ✉️ Envelope -->
+  <div class="envelope-wrapper" id="envelope">
+    <div class="envelope">
+      <div class="flap"></div>
+      <div class="card">
+        <h1>Merry Christmas<br/>Nuria 🎄</h1>
+      </div>
+    </div>
+    <div class="hint">Click to open</div>
+  </div>
+
+  <!-- 🎬 Animation + redirect -->
+  <script>
+    const envelope = document.getElementById("envelope");
+
+    envelope.addEventListener("click", () => {
+      envelope.classList.add("open");
+
+      setTimeout(() => {
+        document.body.classList.add("fade-out");
+      }, 900);
+
+      setTimeout(() => {
+        window.location.href = "present.html";
+      }, 1400);
+    });
+  </script>
 
 </body>
 </html>
